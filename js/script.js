@@ -1,10 +1,16 @@
 /* ================= On page load ================= */
 
 document.addEventListener("DOMContentLoaded", (e) => {
-    // Update models
-    models.innerHTML = getDB("cardsModels")?.objs.filter(o => o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
-    // Update cards
-    cards.innerHTML = getDB("cardsModels")?.objs.filter(o => !o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+    const modelsObjs = getDB("cardsModels")?.objs.filter(o => o.model);
+    if (modelsObjs)
+        // Update cards
+        models.innerHTML = modelsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+    
+    const cardsObjs = getDB("cardsModels")?.objs.filter(o => !o.model);
+
+    if (cardsObjs)
+        // Update cards
+        cards.innerHTML = cardsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
 });
 
 /* ================= Text modal ================= */
@@ -178,8 +184,12 @@ loadNewCardBtn.addEventListener("click", async (e) => {
             file: svgCard.innerHTML
         });
 
-        // Update cards
-        cards.innerHTML = getDB("cardsModels").objs.filter(o => !o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+        const cardsObjs = getDB("cardsModels").objs.filter(o => !o.model);
+
+        if (cardsObjs)
+            // Update cards
+            cards.innerHTML = cardsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+
     } catch (e) {
         alert(e);
         console.error(e);
@@ -199,8 +209,11 @@ loadNewModelBtn.addEventListener("click", async (e) => {
             file: output
         });
 
-        // Update models
-        models.innerHTML = getDB("cardsModels").objs.filter(o => o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+        const modelsObjs = getDB("cardsModels").objs.filter(o => o.model);
+
+        if (modelsObjs)
+            // Update cards
+            models.innerHTML = modelsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
     } catch (e) {
         alert(e);
         console.error(e);
