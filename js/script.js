@@ -168,7 +168,7 @@ loadNewCardBtn.addEventListener("click", async (e) => {
         // Check if the name is acceptable
         if (!cardName?.value)
             return alert("Error saving the card: Card name is empty");
-        else if (!svgCard?.innerHTML?.startsWith("<svg"))
+        else if (!svgCard?.innerHTML?.includes("<svg"))
             return alert("Error saving the card: There is no card selected");
 
         // Add the model into localStorage
