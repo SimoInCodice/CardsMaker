@@ -43,6 +43,10 @@ const imageModalCloseXBtn = document.querySelector("#imageModalCloseXBtn");
 
 /* ================= Cards & Models  ================= */
 
+/* Groups */
+const cards = document.querySelector("#cards");
+const models = document.querySelector("#models");
+
 /* Inputs */
 const newCard = document.querySelector("#newCard");
 const newModel = document.querySelector("#newModel");
@@ -50,4 +54,3 @@ const newModel = document.querySelector("#newModel");
 /* Buttons */
 const loadNewCardBtn = document.querySelector("#loadNewCardBtn");
 const loadNewModelBtn = document.querySelector("#loadNewModelBtn");
-

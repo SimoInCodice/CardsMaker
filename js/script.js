@@ -162,19 +162,22 @@ document.querySelector("#downloadBtn").addEventListener("click", async (e) => {
 
 /* New card load button */
 loadNewCardBtn.addEventListener("click", async (e) => {
-    // Read the file
-    const output = await readInputFile(newCard, "text").catch((e) => console.log(e));
-
-    console.log(output);
-
-    // Insert the svg into svgCard DIV.
-    svgCard.innerHTML = output;
-
-    // Update card var
-    card = document.querySelector("#svgCard svg");
+    
 });
 
 /* New model load button */
-loadNewCardBtn.addEventListener("click", (e) => {
-    // ...
+loadNewModelBtn.addEventListener("click", async (e) => {
+    // Read the file
+    const output = await readInputFile(newModel, "text").catch((e) => console.log(e));
+
+    console.log(output);
+
+    // Add the model into localStorage
+    insertDB("cardsModels", {
+        name: "Test" + Array.from("xxx").map(c => String.fromCharCode(65 + Math.floor(Math.random() * (90 - 65)))),
+        model: true
+    });
+
+    // Update card var
+    card = document.querySelector("#svgCard svg");
 });

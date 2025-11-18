@@ -77,3 +77,30 @@ async function downloadCard(svgEl, moltiplicator) {
     };
     img.src = url;
 }
+
+/* Local storage DBs */
+
+function setDB(dbName, objs, nextId) {
+    localStorage.setItem(dbName, JSON.stringify({
+        nextId,
+        objs
+    }));
+}
+
+function getDB(dbName) {
+    return JSON.parse(localStorage.getItem(dbName));
+}
+
+function insertDB(dbName, obj) {
+    const db = getDB(dbName);
+    // Add the id to the obj
+    const objId = db?.nextId || 0;
+    const nextId = objId + 1;
+    const newObj = Object.assign({
+        id: objId,
+    }, obj);
+    if (!db)
+        setDB(dbName, [newObj], nextId);
+    else
+        setDB(dbName, [...(getDB(dbName).objs), newObj], nextId);
+}
