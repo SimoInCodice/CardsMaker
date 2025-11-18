@@ -96,7 +96,6 @@ imageModalSaveBtn.addEventListener("click", async (e) => {
     const output = await readInputFile(imageInput, "url");
     // Modify the href of the targetObj
     targetObj.href.baseVal = output;
-    console.log(targetObj.href);
     // Hide the modal
     bImageModal.hide();
     // Clear the image input
@@ -108,20 +107,17 @@ imageModalSaveBtn.addEventListener("click", async (e) => {
 document.oncontextmenu = (e) => {
     // Block the normal activity of the context menu
     e.preventDefault();
-    console.log(e.target.localName);
     const target = e.target;
     // Save the target
     targetObj = target;
     // Target style
     const targetStyle = getComputedStyle(target);
-    console.log(targetStyle);
     const targetTag = e.target.localName;
     // Check the tag
     if (targetTag === "text") {
         bTextModal.show();
         // Change the text inside the input to the content of the selected text
         const text = target.textContent;
-        console.log(text);
         newText.value = text;
         // Insert the element id into the input label
         newTextLabel.innerText = target.id;
@@ -132,7 +128,6 @@ document.oncontextmenu = (e) => {
         // Activate a specific alignment button
         // Target alignment
         const targetAlignment = targetObj.getAttribute("text-anchor");
-        console.log(targetAlignment);
         // Highlight one button
         switch (targetAlignment) {
             case "end":
@@ -149,10 +144,8 @@ document.oncontextmenu = (e) => {
                 break;
         }
     } else if (targetTag === "image") {
-        console.log(e.target.href);
         bImageModal.show();
         // Insert the element id into the input label
-        console.log(newTextLabel.innerText);
         imageLabel.innerText = target.id;
     }
 };
