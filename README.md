@@ -1,6 +1,6 @@
 <img src="./images/cards_maker-logo-with_background.svg" alt="drawing" width="20%"/>
 
-# CardsMaker v1.1
+# CardsMaker v1.2
 
 ## Major features
 - SVG editable model (for now only one model is available)
@@ -11,6 +11,5 @@
 - Image editor:
   - Input file
 - Download the custom model (with custom texts and images) as a raster file (.png)
-
-### Future implementetions
-- [ ] Multiple cards models
+- Multiple cards models
+- Save cards for future uses
