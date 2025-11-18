@@ -91,7 +91,14 @@ function getDB(dbName) {
     return JSON.parse(localStorage.getItem(dbName));
 }
 
-function insertDB(dbName, obj) {
+function getObjDB(dbName, id) {
+    const db = getDB(dbName);
+    const objs = db?.objs;
+    if (!objs?.length) return null;
+    return objs.find(o => o.id == id);
+}
+
+function insertObjDB(dbName, obj) {
     const db = getDB(dbName);
     // Add the id to the obj
     const objId = db?.nextId || 0;
@@ -103,4 +110,15 @@ function insertDB(dbName, obj) {
         setDB(dbName, [newObj], nextId);
     else
         setDB(dbName, [...(getDB(dbName).objs), newObj], nextId);
+}
+
+function deleteObjDB(dbName, id) {
+    const db = getDB(dbName);
+    const objs = db.objs;
+    // Get the obj's pos
+    const pos = objs.indexOf(objs.find(o => o.id === id));
+    // Delete it
+    objs.splice(pos, 1);
+    // Save the modified array
+    setDB(dbName, [...(getDB(dbName).objs)], db.nextId);
 }

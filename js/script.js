@@ -1,3 +1,12 @@
+/* ================= On page load ================= */
+
+document.addEventListener("DOMContentLoaded", (e) => {
+    // Update models
+    models.innerHTML = getDB("cardsModels").objs.filter(o => o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+    // Update cards
+    cards.innerHTML = getDB("cardsModels").objs.filter(o => !o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+});
+
 /* ================= Text modal ================= */
 
 /* Save button */
@@ -162,22 +171,61 @@ document.querySelector("#downloadBtn").addEventListener("click", async (e) => {
 
 /* New card load button */
 loadNewCardBtn.addEventListener("click", async (e) => {
-    
+    try {
+        // Check if the name is acceptable
+        if (!cardName?.value)
+            return alert("Error saving the card: Card name is empty");
+        else if (!svgCard?.innerHTML?.startsWith("<svg"))
+            return alert("Error saving the card: There is no card selected");
+
+        // Add the model into localStorage
+        insertObjDB("cardsModels", {
+            name: cardName.value,
+            model: false,
+            file: svgCard.innerHTML
+        });
+
+        // Update cards
+        cards.innerHTML = getDB("cardsModels").objs.filter(o => !o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+    } catch (e) {
+        alert(e);
+        console.error(e);
+    }
 });
 
 /* New model load button */
 loadNewModelBtn.addEventListener("click", async (e) => {
-    // Read the file
-    const output = await readInputFile(newModel, "text").catch((e) => console.log(e));
+    try {
+        // Read the file
+        const output = await readInputFile(newModel, "text");
 
-    console.log(output);
+        // Add the model into localStorage
+        insertObjDB("cardsModels", {
+            name: "Test" + Array.from("xxx").map(c => String.fromCharCode(65 + Math.floor(Math.random() * (90 - 65)))),
+            model: true,
+            file: output
+        });
 
-    // Add the model into localStorage
-    insertDB("cardsModels", {
-        name: "Test" + Array.from("xxx").map(c => String.fromCharCode(65 + Math.floor(Math.random() * (90 - 65)))),
-        model: true
-    });
-
-    // Update card var
-    card = document.querySelector("#svgCard svg");
+        // Update models
+        models.innerHTML = getDB("cardsModels").objs.filter(o => o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+    } catch (e) {
+        alert(e);
+        console.error(e);
+    }
 });
+
+/* When a user click on a saved model */
+function onCardModelClick(element) {
+    const value = element.getAttribute("value");
+    const [dbName, objId] = value.split("-");
+    const model = getObjDB(dbName, objId);
+
+    if (!model) return alert("Error loading model");
+
+    // Change the input card name
+    cardName.value = model.name;
+
+    svgCard.innerHTML = model.file;
+
+    card = document.querySelector("#svgCard svg");
+}

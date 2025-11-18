@@ -2,6 +2,7 @@
 let svgCard = document.querySelector("#svgCard");
 // SVG element
 let card = document.querySelector("#svgCard svg");
+const cardName = document.querySelector("#cardName");
 // Init the custom context menu action
 /* Selected target obj */
 let targetObj = null;
