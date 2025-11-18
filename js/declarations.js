@@ -1,5 +1,5 @@
 // SVG element
-const card = document.querySelector("#card");
+let card = document.querySelector("#svgCard svg");
 // Init the custom context menu action
 /* Selected target obj */
 let targetObj = null;

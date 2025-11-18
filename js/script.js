@@ -188,6 +188,10 @@ async function downloadCard(svgEl, moltiplicator) {
 
 // Download the card on the click
 document.querySelector("#downloadBtn").addEventListener("click", async (e) => {
-    console.log(card);
+    if (!card) {
+        console.log("Download error: There is no card");
+        alert("Download error: There is no card");
+        return;
+    } 
     await downloadCard(card, 4);
 });
