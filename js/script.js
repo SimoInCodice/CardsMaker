@@ -78,29 +78,20 @@ textAlignmentRightBtn.addEventListener("click", () => {
 /* ================= Image modal ================= */
 
 /* Image modal save changes button action */
-imageModalSaveBtn.addEventListener("click", (e) => {
+imageModalSaveBtn.addEventListener("click", async (e) => {
     // Check the obj tag
     if (targetObj.localName !== "image") return alert("Errore: Non è stato possibile modificare l'immagine");
     // Base64 of the file
     const [file] = imageInput.files;
     if (!file) return alert("Errore: Non è stata caricata un'immagine");
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    fileReader.onloadend = (e) => {
-        const result = e.currentTarget.result;
-        // Modify the href of the targetObj
-        targetObj.href.baseVal = result;
-        console.log(targetObj.href);
-    }
+    const output = await readInputFile(imageInput, "url");
+    // Modify the href of the targetObj
+    targetObj.href.baseVal = output;
+    console.log(targetObj.href);
     // Hide the modal
     bImageModal.hide();
     // Clear the image input
     imageInput.value = null;
-});
-
-// When a user upload an image
-imageInput.addEventListener("input", (e) => {
-    
 });
 
 /* ================= Context menu ================= */
@@ -163,6 +154,27 @@ document.querySelector("#downloadBtn").addEventListener("click", async (e) => {
         console.log("Download error: There is no card");
         alert("Download error: There is no card");
         return;
-    } 
+    }
     await downloadCard(card, 4);
+});
+
+/* ================= Cards & Models ================= */
+
+/* New card load button */
+loadNewCardBtn.addEventListener("click", async (e) => {
+    // Read the file
+    const output = await readInputFile(newCard, "text").catch((e) => console.log(e));
+
+    console.log(output);
+
+    // Insert the svg into svgCard DIV.
+    svgCard.innerHTML = output;
+
+    // Update card var
+    card = document.querySelector("#svgCard svg");
+});
+
+/* New model load button */
+loadNewCardBtn.addEventListener("click", (e) => {
+    // ...
 });

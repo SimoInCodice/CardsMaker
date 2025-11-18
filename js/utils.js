@@ -26,19 +26,28 @@ function highlightElement(elements, classStr, pos) {
 }
 
 /* Inputs */
-
-function readInputFile(input, output) {
-    const [file] = imageInput.files;
-    if (!file) return alert("Errore: Non è stata caricata un'immagine");
-    const fileReader = new FileReader();
-    fileReader.readAsText(file);
-    fileReader.onloadend = (e) => {
-        const result = e.currentTarget.result;
-        output = result;
-    }
+// input: html input obj, mode: text / url 
+function readInputFile(input, mode) {
+    return new Promise((res, rej) => {
+        const [file] = input.files;
+        if (!file) return rej("Error: Empty input");
+        const fileReader = new FileReader();
+        if (mode === "url")
+            fileReader.readAsDataURL(file);
+        else if (mode === "text")
+            fileReader.readAsText(file);
+        else if (mode === "arraybuffer")
+            fileReader.readAsArrayBuffer(file);
+        else
+            rej("Read file error: Wrong read mode");
+        fileReader.onloadend = (e) => {
+            const result = e.currentTarget.result;
+            res(result);
+        }
+    });
 }
 
-/* Cards */
+/* Cards & Models */
 
 // Download the custom card
 async function downloadCard(svgEl, moltiplicator) {

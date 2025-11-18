@@ -1,3 +1,5 @@
+// SVG DIV element
+let svgCard = document.querySelector("#svgCard");
 // SVG element
 let card = document.querySelector("#svgCard svg");
 // Init the custom context menu action
@@ -46,3 +48,6 @@ const newCard = document.querySelector("#newCard");
 const newModel = document.querySelector("#newModel");
 
 /* Buttons */
+const loadNewCardBtn = document.querySelector("#loadNewCardBtn");
+const loadNewModelBtn = document.querySelector("#loadNewModelBtn");
+
