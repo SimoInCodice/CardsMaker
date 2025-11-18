@@ -38,3 +38,11 @@ const imageLabel = document.querySelector("#newImageLabel");
 const imageModalSaveBtn = document.querySelector("#imageModalSaveBtn");
 const imageModalCloseBtn = document.querySelector("#imageModalCloseBtn");
 const imageModalCloseXBtn = document.querySelector("#imageModalCloseXBtn");
+
+/* ================= Cards & Models  ================= */
+
+/* Inputs */
+const newCard = document.querySelector("#newCard");
+const newModel = document.querySelector("#newModel");
+
+/* Buttons */

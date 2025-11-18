@@ -14,34 +14,49 @@
             <img class="rounded" src="./images/cards_maker-logo-with_background.svg" width="80px" alt="logo-card_maker">
             <h1 class="mx-2">Cards Maker v1.1</h1>
         </div>
-        <button class="btn btn-primary position-absolute top-0 end-0 m-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
-            Apri MENU
+
+        <!-- Models Menu -->
+
+        <button class="btn btn-primary position-absolute top-0 end-0 m-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#modelsMenu" aria-controls="modelsMenu">
+            Menu Modelli
         </button>
 
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="modelsMenu" aria-labelledby="modelsMenuLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasExampleLabel">MENU</h5>
+            <h5 class="offcanvas-title" id="modelsMenuLabel">Menu Modelli</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
             <h6>Modelli salvati</h6>
-            <div id="savedModels">
+            <div class="d-flex flex-column justify-content-center flex-nowrap" id="savedModels">
                 <div id="models">Nessun modello</div>
-                <button>Carica</button>
+                <input type="file" name="newModel" id="newModel">
+                <button class="btn btn-primary" type="button" id="loadModelBtn">Carica</button>
             </div>
+        </div>
+        </div>
+
+        <!-- Cards Menu -->
+
+        <button class="btn btn-primary position-absolute top-0 start-0 m-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#cardsMenu" aria-controls="cardsMenu">
+            Menu Carte
+        </button>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="cardsMenu" aria-labelledby="cardsMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="cardsMenuLabel">Menu carte</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
             <h6>Carte salvate</h6>
-            <div class="dropdown mt-3">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                Dropdown button
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
+            <div class="d-flex flex-column justify-content-center" id="savedCards">
+                <div id="cards">Nessuna carta</div>
+                <input type="file" name="newCard" id="newCard">
+                <button class="btn btn-primary" type="button" id="loadCardBtn">Carica</button>
             </div>
         </div>
         </div>
+
         <div id="svgCard" class="pb-4">
             <!-- SVG CARD -->
             <h3>Nessun modello selezionato</h3>

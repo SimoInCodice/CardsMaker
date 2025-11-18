@@ -1,6 +1,6 @@
 /* ================= Text modal ================= */
 
-/* Text modal save changes button action */
+/* Save button */
 textModalSaveBtn.addEventListener("click", (e) => {
     // Check the obj tag
     if (targetObj.localName !== "text") return alert("Errore: Non è stato possibile modificare il testo");
@@ -156,35 +156,6 @@ document.oncontextmenu = (e) => {
         imageLabel.innerText = target.id;
     }
 };
-
-// Download the custom card
-async function downloadCard(svgEl, moltiplicator) {
-    // From SVG element create a Blob
-    const svgXml = new XMLSerializer().serializeToString(svgEl);
-    console.log(svgXml);
-    const blob = new Blob([svgXml], { type: 'image/svg+xml;charset=utf-8' } );
-    const url = URL.createObjectURL(blob);
-    console.log(url);
-    const img = new Image();
-    img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width * moltiplicator;
-        canvas.height = img.height * moltiplicator;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#ffffff00'; // Fill with a trasparent color
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.drawImage(img,0,0);
-        // Create the link
-        const a = document.createElement('a');
-        a.href = canvas.toDataURL('image/png');
-        a.download = (svgEl.value||'card') + '.png';
-        // Click on the link
-        a.click(); 
-        // Remove the link
-        URL.revokeObjectURL(url);
-    };
-    img.src = url;
-}
 
 // Download the card on the click
 document.querySelector("#downloadBtn").addEventListener("click", async (e) => {
