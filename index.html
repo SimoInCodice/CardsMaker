@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cards Maker v1.1 by SimoInCodice</title>
+    <link rel="icon" href="./images/cards_maker-logo-with_background.svg" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body style="background-color: rgb(224, 224, 224);">
+    <div class="container-sm text-center">
+        <div class="d-flex justify-content-center align-items-center m-4">
+            <img class="rounded" src="./images/cards_maker-logo-with_background.svg" width="80px" alt="logo-card_maker">
+            <h1 class="mx-2">Cards Maker v1.1</h1>
+        </div>
+        <div id="svgCard" class="pb-4">
+            <!-- SVG CARD -->
+        </div>
+        <button id="downloadBtn" class="btn btn-success">Download</button>
+        <div id="credits" class="m-2">
+            <p class="p-1 m-0">Made by SimoInCodice</p>
+            <a href="https://github.com/SimoInCodice/CardMaker"><img src="./images/github-mark.svg" width="25px" alt="githubLogo"></a>
+        </div>
+    </div>
+    <!-- Text Modal -->
+    <div class="modal fade" id="textModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifica il testo</h5>
+                <button id="textModalCloseXBtn" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label id="newTextLabel" for="newTextInput">Testo</label>
+                    <input type="text" name="newText" id="newText">
+                    <p id="newTextError" class="text-danger text-center"></p>
+                </div>
+                <div class="mb-2">
+                    <label id="textSizeLabel" for="textSize">Dimensione (px)</label>
+                    <input type="number" inputmode="decimal" min="1" max="72" step="0.5" name="textSize" id="textSize">
+                    <p id="textSizeError" class="text-danger text-center"></p>
+                </div>
+                <div>
+                    <label for="textAlignmentBtns">Allineamento</label>
+                    <div class="btn-group" id="textAlignmentBtns">
+                        <button href="" value="end" id="textAlignmentLeftBtn" class="btn btn-primary" aria-current="page"><-</button>
+                        <button href="" value="middle" id="textAlignmentCenterBtn" class="btn btn-primary">=</button>
+                        <button href="" value="start" id="textAlignmentRightBtn" class="btn btn-primary">-></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="textModalCloseBtn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                <button id="textModalSaveBtn" type="button" class="btn btn-success">Salva</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifica l'immagine</h5>
+                <button id="imageModalCloseXBtn" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label id="newImageLabel" for="newImage">Immagine</label>
+                <input type="file" name="newImage" id="newImage">
+            </div>
+            <div class="modal-footer">
+                <button id="imageModalCloseBtn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                <button id="imageModalSaveBtn" type="button" class="btn btn-success">Salva</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <!-- JS utils -->
+    <script src="./js/declarations.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/script.js"></script>
+</body>
+</html>
