@@ -2,9 +2,9 @@
 
 document.addEventListener("DOMContentLoaded", (e) => {
     // Update models
-    models.innerHTML = getDB("cardsModels").objs.filter(o => o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+    models.innerHTML = getDB("cardsModels")?.objs.filter(o => o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
     // Update cards
-    cards.innerHTML = getDB("cardsModels").objs.filter(o => !o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+    cards.innerHTML = getDB("cardsModels")?.objs.filter(o => !o.model).map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
 });
 
 /* ================= Text modal ================= */
