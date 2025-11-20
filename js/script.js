@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", (e) => {
         models.innerHTML = modelsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
     
     const cardsObjs = getDB("cardsModels")?.objs.filter(o => !o.model);
-    console.log(cardsObjs);
     if (cardsObjs?.length)
         // Update cards
         cards.innerHTML = cardsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
