@@ -26,7 +26,7 @@ function highlightElement(elements, classStr, pos) {
 }
 
 /* Inputs */
-// input: html input obj, mode: text / url 
+// input: html input obj, mode: text / url / arraybuffer
 function readInputFile(input, mode) {
     return new Promise((res, rej) => {
         const [file] = input.files;
@@ -42,7 +42,9 @@ function readInputFile(input, mode) {
             rej("Read file error: Wrong read mode");
         fileReader.onloadend = (e) => {
             const result = e.currentTarget.result;
-            res(result);
+            res(Object.assign(file, {
+                content: result
+            }));
         }
     });
 }

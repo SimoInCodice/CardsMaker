@@ -99,7 +99,7 @@ imageModalSaveBtn.addEventListener("click", async (e) => {
     // Base64 of the file
     const [file] = imageInput.files;
     if (!file) return alert("Errore: Non è stata caricata un'immagine");
-    const output = await readInputFile(imageInput, "url");
+    const { content: output } = await readInputFile(imageInput, "url");
     // Modify the href of the targetObj
     targetObj.href.baseVal = output;
     // Hide the modal
@@ -200,11 +200,11 @@ loadNewCardBtn.addEventListener("click", async (e) => {
 loadNewModelBtn.addEventListener("click", async (e) => {
     try {
         // Read the file
-        const output = await readInputFile(newModel, "text");
+        const { name, content: output } = await readInputFile(newModel, "text");
 
         // Add the model into localStorage
         insertObjDB("cardsModels", {
-            name: "Test" + Array.from("xxx").map(c => String.fromCharCode(65 + Math.floor(Math.random() * (90 - 65)))),
+            name: name.split(".")[0],
             model: true,
             file: output
         });
@@ -218,6 +218,8 @@ loadNewModelBtn.addEventListener("click", async (e) => {
         alert(e);
         console.error(e);
     }
+    // Clear the input
+    newModel.value = null;
 });
 
 /* When a user click on a saved model */
