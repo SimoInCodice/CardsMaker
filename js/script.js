@@ -2,13 +2,13 @@
 
 document.addEventListener("DOMContentLoaded", (e) => {
     const modelsObjs = getDB("cardsModels")?.objs.filter(o => o.model);
-    if (modelsObjs)
+    if (modelsObjs?.length)
         // Update cards
         models.innerHTML = modelsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
     
     const cardsObjs = getDB("cardsModels")?.objs.filter(o => !o.model);
-
-    if (cardsObjs)
+    console.log(cardsObjs);
+    if (cardsObjs?.length)
         // Update cards
         cards.innerHTML = cardsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
 });
