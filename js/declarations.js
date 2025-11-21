@@ -62,4 +62,4 @@ const deleteModelsBtns = document.querySelector("deleteModel");
 
 /* DBs */
 
-const cardsModelDBName = "cardsModels";
+const cardsModelsDBName = "cardsModels";
