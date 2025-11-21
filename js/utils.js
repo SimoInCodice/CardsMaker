@@ -122,5 +122,5 @@ function deleteObjDB(dbName, id) {
     // Delete it
     objs.splice(pos, 1);
     // Save the modified array
-    setDB(dbName, [...(getDB(dbName).objs)], db.nextId);
+    setDB(dbName, objs, db.nextId);
 }

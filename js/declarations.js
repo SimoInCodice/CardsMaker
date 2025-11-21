@@ -53,5 +53,13 @@ const newCard = document.querySelector("#newCard");
 const newModel = document.querySelector("#newModel");
 
 /* Buttons */
+/* Load */
 const loadNewCardBtn = document.querySelector("#loadNewCardBtn");
 const loadNewModelBtn = document.querySelector("#loadNewModelBtn");
+/* Delete */
+const deleteCardsBtns = document.querySelector("deleteCard");
+const deleteModelsBtns = document.querySelector("deleteModel");
+
+/* DBs */
+
+const cardsModelDBName = "cardsModels";

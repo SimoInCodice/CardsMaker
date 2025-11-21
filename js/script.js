@@ -1,15 +1,9 @@
 /* ================= On page load ================= */
 
 document.addEventListener("DOMContentLoaded", (e) => {
-    const modelsObjs = getDB("cardsModels")?.objs.filter(o => o.model);
-    if (modelsObjs?.length)
-        // Update cards
-        models.innerHTML = modelsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+    updateCardsUI();
     
-    const cardsObjs = getDB("cardsModels")?.objs.filter(o => !o.model);
-    if (cardsObjs?.length)
-        // Update cards
-        cards.innerHTML = cardsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+    updateModelsUI();
 });
 
 /* ================= Text modal ================= */
@@ -167,6 +161,26 @@ document.querySelector("#downloadBtn").addEventListener("click", async (e) => {
 
 /* ================= Cards & Models ================= */
 
+/* Update the cards UI */
+
+function updateCardsUI() {
+    const cardsObjs = getDB(`${cardsModelDBName}`)?.objs.filter(o => !o.model);
+    if (cardsObjs?.length)
+        // Update cards
+        cards.innerHTML = cardsObjs.map(o => `<div class="d-flex align-items-center gap-2"><div onclick="onCardModelClick(this)" id="${cardsModelDBName}-${o.id}">${o.name}</div><button onclick="onCardDelete(this)" style="width: fit-content;" class="btn btn-danger deleteCard" type="button" value="${o.id}">X</button></div>`).join("");
+    else
+        cards.innerHTML = "Nessuna carta";
+}
+
+function updateModelsUI() {
+    const modelsObjs = getDB(`${cardsModelDBName}`)?.objs.filter(o => o.model);
+    if (modelsObjs?.length)
+        // Update cards
+        models.innerHTML = modelsObjs.map(o => `<div class="d-flex align-items-center gap-2"><div onclick="onCardModelClick(this)" id="${cardsModelDBName}-${o.id}">${o.name}</div><button onclick="onModelDelete(this)" style="width: fit-content;" class="btn btn-danger deleteModel" type="button" value="${o.id}">X</button></div>`).join("");
+    else
+        models.innerHTML = "Nessun modello";
+}
+
 /* New card load button */
 loadNewCardBtn.addEventListener("click", async (e) => {
     try {
@@ -177,18 +191,13 @@ loadNewCardBtn.addEventListener("click", async (e) => {
             return alert("Error saving the card: There is no card selected");
 
         // Add the model into localStorage
-        insertObjDB("cardsModels", {
+        insertObjDB(`${cardsModelDBName}`, {
             name: cardName.value,
             model: false,
             file: svgCard.innerHTML
         });
 
-        const cardsObjs = getDB("cardsModels").objs.filter(o => !o.model);
-
-        if (cardsObjs)
-            // Update cards
-            cards.innerHTML = cardsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
-
+        updateCardsUI();
     } catch (e) {
         alert(e);
         console.error(e);
@@ -202,17 +211,13 @@ loadNewModelBtn.addEventListener("click", async (e) => {
         const { name, content: output } = await readInputFile(newModel, "text");
 
         // Add the model into localStorage
-        insertObjDB("cardsModels", {
+        insertObjDB(`${cardsModelDBName}`, {
             name: name.split(".")[0],
             model: true,
             file: output
         });
 
-        const modelsObjs = getDB("cardsModels").objs.filter(o => o.model);
-
-        if (modelsObjs)
-            // Update cards
-            models.innerHTML = modelsObjs.map(m => `<p onclick="onCardModelClick(this)" value="cardsModels-${m.id}">${m.name}</p>`).join("");
+        updateModelsUI();
     } catch (e) {
         alert(e);
         console.error(e);
@@ -223,7 +228,7 @@ loadNewModelBtn.addEventListener("click", async (e) => {
 
 /* When a user click on a saved model */
 function onCardModelClick(element) {
-    const value = element.getAttribute("value");
+    const value = element.getAttribute("id");
     const [dbName, objId] = value.split("-");
     const model = getObjDB(dbName, objId);
 
@@ -235,4 +240,43 @@ function onCardModelClick(element) {
     svgCard.innerHTML = model.file;
 
     card = document.querySelector("#svgCard svg");
+}
+
+function deleteCardModel(id) {
+    // Check the id even if the id is equals to 0
+    if (!Number.isInteger(id))
+        return null;
+    // Delete the element and update the DB
+    deleteObjDB(cardsModelDBName, id);
+    // Successful deleted the obj
+    return true;
+}
+
+/* When a user want to delete a card or a model */
+
+function onCardDelete(btn) {
+    // Get the id
+    const id = Number(btn?.value);
+    if (!deleteCardModel(id)) {
+        console.error("Error deleting card");
+        alert("Error deleting card");
+        return;
+    }
+    
+    // Update the UI
+    updateCardsUI();
+}
+
+function onModelDelete(btn) {
+    // Get the id
+    const id = Number(btn?.value);
+    if (!deleteCardModel(id)) {
+        console.error("Error deleting model");
+        alert("Error deleting model");
+        return;
+    }
+
+    // Update the UI
+    updateModelsUI();
+
 }
