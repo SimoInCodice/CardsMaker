@@ -239,6 +239,7 @@ loadNewModelBtn.addEventListener("click", async (e) => {
         alert(e);
         console.error(e);
     });
+    console.log(isSVG(output));
     // Clear the input
     newModel.value = null;
     try {

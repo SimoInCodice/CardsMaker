@@ -13,6 +13,12 @@ function extractNumber(str) {
     return integerValue + decimalValue;
 }
 
+/* Check if the string is a valid SVG string */
+function isSVG(svgString) {
+    console.log(svgString.matchAll(/(<\?xml\b[^>]*>\s*)?<svg\b[^>]*>.*<\/svg>/g).next());
+    //return svgString.match(/(<\?xml\b[^>]*>\s*)?<svg\b[^>]*>.*<\/svg>/g);
+}
+
 /* Elements */
 
 function highlightElement(elements, classStr, pos) {
