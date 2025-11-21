@@ -190,21 +190,26 @@ loadNewCardBtn.addEventListener("click", async (e) => {
         else if (!svgCard?.innerHTML?.includes("<svg"))
             return alert("Error saving the card: There is no card selected");
         
+        // Check if the name is available without (), if exists the "base" card
+        const baseCard = getDB(cardsModelsDBName)?.objs?.find(o => !o.model && o.name === cardName.value);
         // Get elements that have the same name as the current card
         const sameNameCards = getDB(cardsModelsDBName)?.objs?.filter(o => !o.model && o.name.split(/ +/)[0] === cardName.value);
         let numberOfCopys = "";
-        if (sameNameCards?.length != 0) {
-            // Create a string with a number that can distinguish the new saved card from the old one
-            const copiedCardNumber = sameNameCards.reduce((max, card) => {
-                const [cardName, numberStr] = card.name.split(/ +/);
-                if (!numberStr)
-                    return max;
-                const numberOfCopy = Number(numberStr.slice(1, numberStr.length - 1));
-                
-                if (numberOfCopy > max)
-                    return numberOfCopy;
-            }, 0) + 1;
-            numberOfCopys = `(${copiedCardNumber})`;
+        
+        if (baseCard) {
+            if (sameNameCards?.length != 0) {
+                // Create a string with a number that can distinguish the new saved card from the old one
+                const copiedCardNumber = sameNameCards.reduce((max, card) => {
+                    const [cardName, numberStr] = card.name.split(/ +/);
+                    if (!numberStr)
+                        return max;
+                    const numberOfCopy = Number(numberStr.slice(1, numberStr.length - 1));
+                    
+                    if (numberOfCopy > max)
+                        return numberOfCopy;
+                }, 0) + 1;
+                numberOfCopys = `(${copiedCardNumber})`;
+            }
         }
 
         // Remove unnecessary spaces from the card's name
