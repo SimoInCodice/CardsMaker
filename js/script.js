@@ -230,9 +230,14 @@ loadNewCardBtn.addEventListener("click", async (e) => {
 
 /* New model load button */
 loadNewModelBtn.addEventListener("click", async (e) => {
+    const { name, content: output } = await readInputFile(newModel, "text").catch((e) => {
+        alert(e);
+        console.error(e);
+    });
+    // Clear the input
+    newModel.value = null;
     try {
         // Read the file
-        const { name, content: output } = await readInputFile(newModel, "text");
         const newModelName = name.split(".")[0];
         
         // Check if the model already exists
@@ -256,8 +261,6 @@ loadNewModelBtn.addEventListener("click", async (e) => {
         alert(e);
         console.error(e);
     }
-    // Clear the input
-    newModel.value = null;
     // Send a success message
     alert("The model is successfully loaded");
 });
