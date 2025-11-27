@@ -59,6 +59,9 @@ const loadNewModelBtn = document.querySelector("#loadNewModelBtn");
 /* Delete */
 const deleteCardsBtns = document.querySelector("deleteCard");
 const deleteModelsBtns = document.querySelector("deleteModel");
+/* Download */
+const downloadCardSVGBtn = document.querySelector("#downloadCardSVGBtn");
+const downloadCardPNGBtn = document.querySelector("#downloadCardPNGBtn");
 
 /* DBs */
 

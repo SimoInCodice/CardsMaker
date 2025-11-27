@@ -66,7 +66,16 @@
             <h3>Nessun/a modello/carta selezionato/a</h3>
         </div>
 
-        <button id="downloadBtn" class="btn btn-success">Download</button>
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Download
+            </button>
+            <ul class="dropdown-menu">
+                <li id="downloadCardSVGBtn"><a class="dropdown-item" href="#">SVG</a></li>
+                <li id="downloadCardPNGBtn"><a class="dropdown-item" href="#">PNG</a></li>
+            </ul>
+        </div>
         <div id="credits" class="m-2">
             <p class="p-1 m-0">Made by SimoInCodice</p>
             <a href="https://github.com/SimoInCodice/CardMaker"><img src="./images/github-mark.svg" width="25px" alt="githubLogo"></a>

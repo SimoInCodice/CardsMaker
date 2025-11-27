@@ -150,14 +150,38 @@ document.oncontextmenu = (e) => {
 };
 
 // Download the card on the click
-document.querySelector("#downloadBtn").addEventListener("click", async (e) => {
+downloadCardSVGBtn.addEventListener("click", async (e) => {
+    console.log(cardName.value);
     if (!card) {
-        console.log("Download error: There is no card");
+        console.error("Download error: There is no card");
         alert("Download error: There is no card");
         return;
+    } else if (!cardName?.value) {
+        console.error("Download error: There is no card name");
+        alert("Download error: There is no card name");
+        return;
     }
-    await downloadCard(card, 4);
+    
+    await downloadCardSVG(card, cardName.value);
+    //await downloadCard(card, 4);
 });
+
+downloadCardPNGBtn.addEventListener("click", async (e) => {
+    console.log(cardName.value);
+    if (!card) {
+        console.error("Download error: There is no card");
+        alert("Download error: There is no card");
+        return;
+    } else if (!cardName?.value) {
+        console.error("Download error: There is no card name");
+        alert("Download error: There is no card name");
+        return;
+    }
+    
+    await downloadCardPNG(card, 4, cardName.value);
+    //await downloadCard(card, 4);
+});
+
 
 /* ================= Cards & Models ================= */
 

@@ -57,8 +57,8 @@ function readInputFile(input, mode) {
 
 /* Cards & Models */
 
-// Download the custom card
-async function downloadCard(svgEl, moltiplicator) {
+// Download the custom card in PNG format
+async function downloadCardPNG(svgEl, moltiplicator, cardName) {
     // From SVG element create a Blob
     const svgXml = new XMLSerializer().serializeToString(svgEl);
     console.log(svgXml);
@@ -77,7 +77,29 @@ async function downloadCard(svgEl, moltiplicator) {
         // Create the link
         const a = document.createElement('a');
         a.href = canvas.toDataURL('image/png');
-        a.download = (svgEl.value||'card') + '.png';
+        a.download = (cardName || 'card') + '.png';
+        // Click on the link
+        a.click(); 
+        // Remove the link
+        URL.revokeObjectURL(url);
+    };
+    img.src = url;
+}
+
+// Download the custom card in SVG
+async function downloadCardSVG(svgEl, cardName) {
+    // From SVG element create a Blob
+    const svgXml = new XMLSerializer().serializeToString(svgEl);
+    console.log(svgXml);
+    const blob = new Blob([svgXml], { type: 'image/svg+xml;charset=utf-8' } );
+    const url = URL.createObjectURL(blob);
+    console.log(url);
+    const img = new Image();
+    img.onload = () => {
+        // Create the link
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = (cardName || 'card') + '.svg';
         // Click on the link
         a.click(); 
         // Remove the link
