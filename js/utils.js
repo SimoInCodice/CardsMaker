@@ -110,45 +110,34 @@ async function downloadCardSVG(svgEl, cardName) {
 
 /* Local storage DBs */
 
-function setDB(dbName, objs, nextId) {
-    localStorage.setItem(dbName, JSON.stringify({
-        nextId,
-        objs
-    }));
+async function createOpenDB(dbName, version, objsStores) {
+    return new Promise((res, rej) => {
+        let db;
+        // Open the DB
+        const request = window.indexedDB.open(dbName, version);
+        request.onerror = (event) => {
+            console.error(`Database error: ${event.target.error?.message}`);
+            rej(`Database error: ${event.target.error?.message}`);
+        };
+        request.onsuccess = (event) => {
+            db = event.target.result;
+            res(db);
+        };
+        request.onupgradeneeded = (event) => {
+            if (objsStores?.length === 0) return;
+
+            const db = event.target.result;
+
+            for (const objStore of objsStores) {
+                const { name, fields } = objStore;
+                db.createObjectStore(name, fields);
+            }
+        };
+    });
 }
 
-function getDB(dbName) {
-    return JSON.parse(localStorage.getItem(dbName));
-}
+function makeTransaction(db, objStoreName, cb) {
+    const t = db.transaction(objStoreName, "readwrite");
 
-function getObjDB(dbName, id) {
-    const db = getDB(dbName);
-    const objs = db?.objs;
-    if (!objs?.length) return null;
-    return objs.find(o => o.id == id);
-}
-
-function insertObjDB(dbName, obj) {
-    const db = getDB(dbName);
-    // Add the id to the obj
-    const objId = db?.nextId || 0;
-    const nextId = objId + 1;
-    const newObj = Object.assign({
-        id: objId,
-    }, obj);
-    if (!db)
-        setDB(dbName, [newObj], nextId);
-    else
-        setDB(dbName, [...(getDB(dbName).objs), newObj], nextId);
-}
-
-function deleteObjDB(dbName, id) {
-    const db = getDB(dbName);
-    const objs = db.objs;
-    // Get the obj's pos
-    const pos = objs.indexOf(objs.find(o => o.id === id));
-    // Delete it
-    objs.splice(pos, 1);
-    // Save the modified array
-    setDB(dbName, objs, db.nextId);
+    t.oncomplete = cb;
 }

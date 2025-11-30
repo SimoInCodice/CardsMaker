@@ -162,7 +162,7 @@ downloadCardSVGBtn.addEventListener("click", async (e) => {
         return;
     }
     
-    await downloadCardSVG(card, cardName.value);
+    downloadCardSVG(card, cardName.value);
     //await downloadCard(card, 4);
 });
 
@@ -178,8 +178,7 @@ downloadCardPNGBtn.addEventListener("click", async (e) => {
         return;
     }
     
-    await downloadCardPNG(card, 4, cardName.value);
-    //await downloadCard(card, 4);
+    downloadCardPNG(card, 4, cardName.value);
 });
 
 
