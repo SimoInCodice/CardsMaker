@@ -108,11 +108,10 @@ async function downloadCardSVG(svgEl, cardName) {
     img.src = url;
 }
 
-/* Local storage DBs */
+/* IndexedDB Utils */
 
 async function createOpenDB(dbName, version, objsStores) {
     return new Promise((res, rej) => {
-        let db;
         // Open the DB
         const request = window.indexedDB.open(dbName, version);
         request.onerror = (event) => {
@@ -120,8 +119,7 @@ async function createOpenDB(dbName, version, objsStores) {
             rej(`Database error: ${event.target.error?.message}`);
         };
         request.onsuccess = (event) => {
-            db = event.target.result;
-            res(db);
+            res(event.target.result);
         };
         request.onupgradeneeded = (event) => {
             if (objsStores?.length === 0) return;
@@ -136,8 +134,57 @@ async function createOpenDB(dbName, version, objsStores) {
     });
 }
 
-function makeTransaction(db, objStoreName, cb) {
-    const t = db.transaction(objStoreName, "readwrite");
+function makeTransaction(db, objStoreName, cb, tcomplete) {
+    return new Promise((res, rej) => {
+        if (!db)
+            return rej(false);
+        const t = db.transaction(objStoreName, "readwrite");
+        const objStore = t.objectStore(objStoreName);
+        res(cb(objStore));
+        t.oncomplete = tcomplete;
+    });
+}
 
-    t.oncomplete = cb;
+// Save cards or model
+async function saveCardsModels(db, obj) {
+    await makeTransaction(db, cardsModelsDBName, (store) => store.add(obj));
+}
+
+// Save card
+async function saveCard(db, obj) {
+    await saveCardsModels(db, Object.assign({ model: false }, obj));
+}
+
+// Save model
+async function saveModel(db, obj) {
+    await saveCardsModels(db, Object.assign({ model: true }, obj));
+}
+
+async function getAll(db, objStoreName) {
+    return new Promise(async (res, rej) => {
+        const request = await makeTransaction(db, objStoreName, (store) => store.getAll());
+        request.onsuccess = (event) => {
+            const objs = event.target.result;
+            res(objs);
+        };
+    });
+}
+
+async function getCards(db) {
+    const cards = (await getAll(db, cardsModelsDBName))?.filter(o => !o.model);
+    return cards;
+}
+
+async function getModels(db) {
+    const models = (await getAll(db, cardsModelsDBName))?.filter(o => o.model);
+    return models;
+}
+
+async function deleteObj(db, objStoreName, id) {
+    return new Promise(async (res, rej) => {
+        const request = await makeTransaction(db, objStoreName, (store) => store.delete(id));
+        request.onsuccess = (event) => {
+            res(true);
+        };
+    });
 }

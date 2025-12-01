@@ -9,7 +9,6 @@ let targetObj = null;
 // Pointing to the modals
 const bTextModal = new bootstrap.Modal("#textModal");
 const bImageModal = new bootstrap.Modal("#imageModal");
-console.log(bTextModal);
 // Pointing the the DOM objects
 // Pointing to the modals
 
@@ -66,3 +65,4 @@ const downloadCardPNGBtn = document.querySelector("#downloadCardPNGBtn");
 /* DBs */
 
 const cardsModelsDBName = "cardsModels";
+let cardsModelsDB = null;
