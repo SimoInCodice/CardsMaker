@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cards Maker v1.2 by SimoInCodice</title>
+    <title>Cards Maker v1.3 by SimoInCodice</title>
     <link rel="icon" href="./images/cards_maker-logo-with_background.svg" type="image/x-icon">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -12,7 +12,7 @@
     <div class="container-sm text-center mt-5">
         <div class="d-flex justify-content-center align-items-center m-4">
             <img class="rounded" src="./images/cards_maker-logo-with_background.svg" width="80px" alt="logo-card_maker">
-            <h1 class="mx-2">Cards Maker v1.2</h1>
+            <h1 class="mx-2">Cards Maker v1.3</h1>
         </div>
 
         <!-- Models Menu -->
@@ -66,7 +66,16 @@
             <h3>Nessun/a modello/carta selezionato/a</h3>
         </div>
 
-        <button id="downloadBtn" class="btn btn-success">Download</button>
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Download
+            </button>
+            <ul class="dropdown-menu">
+                <li id="downloadCardSVGBtn"><a class="dropdown-item" href="#">SVG</a></li>
+                <li id="downloadCardPNGBtn"><a class="dropdown-item" href="#">PNG</a></li>
+            </ul>
+        </div>
         <div id="credits" class="m-2">
             <p class="p-1 m-0">Made by SimoInCodice</p>
             <a href="https://github.com/SimoInCodice/CardMaker"><img src="./images/github-mark.svg" width="25px" alt="githubLogo"></a>

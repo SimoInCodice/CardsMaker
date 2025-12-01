@@ -57,8 +57,8 @@ function readInputFile(input, mode) {
 
 /* Cards & Models */
 
-// Download the custom card
-async function downloadCard(svgEl, moltiplicator) {
+// Download the custom card in PNG format
+async function downloadCardPNG(svgEl, moltiplicator, cardName) {
     // From SVG element create a Blob
     const svgXml = new XMLSerializer().serializeToString(svgEl);
     console.log(svgXml);
@@ -77,7 +77,7 @@ async function downloadCard(svgEl, moltiplicator) {
         // Create the link
         const a = document.createElement('a');
         a.href = canvas.toDataURL('image/png');
-        a.download = (svgEl.value||'card') + '.png';
+        a.download = (cardName || 'card') + '.png';
         // Click on the link
         a.click(); 
         // Remove the link
@@ -86,47 +86,105 @@ async function downloadCard(svgEl, moltiplicator) {
     img.src = url;
 }
 
-/* Local storage DBs */
-
-function setDB(dbName, objs, nextId) {
-    localStorage.setItem(dbName, JSON.stringify({
-        nextId,
-        objs
-    }));
+// Download the custom card in SVG
+async function downloadCardSVG(svgEl, cardName) {
+    // From SVG element create a Blob
+    const svgXml = new XMLSerializer().serializeToString(svgEl);
+    console.log(svgXml);
+    const blob = new Blob([svgXml], { type: 'image/svg+xml;charset=utf-8' } );
+    const url = URL.createObjectURL(blob);
+    console.log(url);
+    const img = new Image();
+    img.onload = () => {
+        // Create the link
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = (cardName || 'card') + '.svg';
+        // Click on the link
+        a.click(); 
+        // Remove the link
+        URL.revokeObjectURL(url);
+    };
+    img.src = url;
 }
 
-function getDB(dbName) {
-    return JSON.parse(localStorage.getItem(dbName));
+/* IndexedDB Utils */
+
+async function createOpenDB(dbName, version, objsStores) {
+    return new Promise((res, rej) => {
+        // Open the DB
+        const request = window.indexedDB.open(dbName, version);
+        request.onerror = (event) => {
+            console.error(`Database error: ${event.target.error?.message}`);
+            rej(`Database error: ${event.target.error?.message}`);
+        };
+        request.onsuccess = (event) => {
+            res(event.target.result);
+        };
+        request.onupgradeneeded = (event) => {
+            if (objsStores?.length === 0) return;
+
+            const db = event.target.result;
+
+            for (const objStore of objsStores) {
+                const { name, fields } = objStore;
+                db.createObjectStore(name, fields);
+            }
+        };
+    });
 }
 
-function getObjDB(dbName, id) {
-    const db = getDB(dbName);
-    const objs = db?.objs;
-    if (!objs?.length) return null;
-    return objs.find(o => o.id == id);
+function makeTransaction(db, objStoreName, cb, tcomplete) {
+    return new Promise((res, rej) => {
+        if (!db)
+            return rej(false);
+        const t = db.transaction(objStoreName, "readwrite");
+        const objStore = t.objectStore(objStoreName);
+        res(cb(objStore));
+        t.oncomplete = tcomplete;
+    });
 }
 
-function insertObjDB(dbName, obj) {
-    const db = getDB(dbName);
-    // Add the id to the obj
-    const objId = db?.nextId || 0;
-    const nextId = objId + 1;
-    const newObj = Object.assign({
-        id: objId,
-    }, obj);
-    if (!db)
-        setDB(dbName, [newObj], nextId);
-    else
-        setDB(dbName, [...(getDB(dbName).objs), newObj], nextId);
+// Save cards or model
+async function saveCardsModels(db, obj) {
+    await makeTransaction(db, cardsModelsDBName, (store) => store.add(obj));
 }
 
-function deleteObjDB(dbName, id) {
-    const db = getDB(dbName);
-    const objs = db.objs;
-    // Get the obj's pos
-    const pos = objs.indexOf(objs.find(o => o.id === id));
-    // Delete it
-    objs.splice(pos, 1);
-    // Save the modified array
-    setDB(dbName, objs, db.nextId);
+// Save card
+async function saveCard(db, obj) {
+    await saveCardsModels(db, Object.assign({ model: false }, obj));
+}
+
+// Save model
+async function saveModel(db, obj) {
+    await saveCardsModels(db, Object.assign({ model: true }, obj));
+}
+
+async function getAll(db, objStoreName) {
+    return new Promise(async (res, rej) => {
+        const request = await makeTransaction(db, objStoreName, (store) => store.getAll());
+        request.onsuccess = (event) => {
+            const objs = event.target.result;
+            res(objs);
+        };
+    });
+}
+
+async function getCards(db) {
+    const cards = (await getAll(db, cardsModelsDBName))?.filter(o => !o.model);
+    return cards;
+}
+
+async function getModels(db) {
+    const models = (await getAll(db, cardsModelsDBName))?.filter(o => o.model);
+    return models;
+}
+
+async function deleteObj(db, objStoreName, id) {
+    return new Promise(async (res, rej) => {
+        const request = await makeTransaction(db, objStoreName, (store) => store.delete(id));
+        request.onsuccess = (event) => {
+            res(true);
+        };
+    });
 }

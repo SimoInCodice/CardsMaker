@@ -1,6 +1,14 @@
 /* ================= On page load ================= */
 
-document.addEventListener("DOMContentLoaded", (e) => {
+document.addEventListener("DOMContentLoaded", async (e) => {
+    // Open a connection with the DB
+    cardsModelsDB = await createOpenDB("test", 1, [
+        {
+            "name": cardsModelsDBName,
+            "fields": { keyPath: "id", autoIncrement: true }
+        }
+    ]);
+
     updateCardsUI();
     
     updateModelsUI();
@@ -150,21 +158,44 @@ document.oncontextmenu = (e) => {
 };
 
 // Download the card on the click
-document.querySelector("#downloadBtn").addEventListener("click", async (e) => {
+downloadCardSVGBtn.addEventListener("click", async (e) => {
+    console.log(cardName.value);
     if (!card) {
-        console.log("Download error: There is no card");
+        console.error("Download error: There is no card");
         alert("Download error: There is no card");
         return;
+    } else if (!cardName?.value) {
+        console.error("Download error: There is no card name");
+        alert("Download error: There is no card name");
+        return;
     }
-    await downloadCard(card, 4);
+    
+    downloadCardSVG(card, cardName.value);
+    //await downloadCard(card, 4);
 });
+
+downloadCardPNGBtn.addEventListener("click", async (e) => {
+    console.log(cardName.value);
+    if (!card) {
+        console.error("Download error: There is no card");
+        alert("Download error: There is no card");
+        return;
+    } else if (!cardName?.value) {
+        console.error("Download error: There is no card name");
+        alert("Download error: There is no card name");
+        return;
+    }
+    
+    downloadCardPNG(card, 4, cardName.value);
+});
+
 
 /* ================= Cards & Models ================= */
 
 /* Update the cards UI */
 
-function updateCardsUI() {
-    const cardsObjs = getDB(`${cardsModelsDBName}`)?.objs.filter(o => !o.model);
+async function updateCardsUI() {
+    const cardsObjs = await getCards(cardsModelsDB);
     if (cardsObjs?.length)
         // Update cards
         cards.innerHTML = cardsObjs.map(o => `<div class="d-flex align-items-center gap-2"><div onclick="onCardModelClick(this)" id="${cardsModelsDBName}-${o.id}">${o.name}</div><button onclick="onCardDelete(this)" style="width: fit-content;" class="btn btn-danger deleteCard" type="button" value="${o.id}">X</button></div>`).join("");
@@ -172,8 +203,8 @@ function updateCardsUI() {
         cards.innerHTML = "Nessuna carta";
 }
 
-function updateModelsUI() {
-    const modelsObjs = getDB(`${cardsModelsDBName}`)?.objs.filter(o => o.model);
+async function updateModelsUI() {
+    const modelsObjs = await getModels(cardsModelsDB);
     if (modelsObjs?.length)
         // Update cards
         models.innerHTML = modelsObjs.map(o => `<div class="d-flex align-items-center gap-2"><div onclick="onCardModelClick(this)" id="${cardsModelsDBName}-${o.id}">${o.name}</div><button onclick="onModelDelete(this)" style="width: fit-content;" class="btn btn-danger deleteModel" type="button" value="${o.id}">X</button></div>`).join("");
@@ -191,9 +222,9 @@ loadNewCardBtn.addEventListener("click", async (e) => {
             return alert("Error saving the card: There is no card selected");
         
         // Check if the name is available without (), if exists the "base" card
-        const baseCard = getDB(cardsModelsDBName)?.objs?.find(o => !o.model && o.name === cardName.value);
+        const baseCard = (await getCards(cardsModelsDB))?.find(o => !o.model && o.name === cardName.value);
         // Get elements that have the same name as the current card
-        const sameNameCards = getDB(cardsModelsDBName)?.objs?.filter(o => !o.model && o.name.split(/ +/)[0] === cardName.value);
+        const sameNameCards = (await getCards(cardsModelsDB))?.filter(o => !o.model && o.name.split(/ +/)[0] === cardName.value);
         let numberOfCopys = "";
         
         if (baseCard) {
@@ -216,18 +247,21 @@ loadNewCardBtn.addEventListener("click", async (e) => {
         const formattedCardName = cardName.value.split(/ +/).join("_");
         
         const newCardName = !numberOfCopys ? `${formattedCardName}` : `${formattedCardName} ${numberOfCopys}`;
+        console.log(newCardName);
 
-        // Add the model into localStorage
-        insertObjDB(`${cardsModelsDBName}`, {
+        const newCard = {
             name: newCardName,
-            model: false,
             file: svgCard.innerHTML
-        });
+        };
+
+        // Save the card in the DB
+        saveCard(cardsModelsDB, newCard);
 
         updateCardsUI();
     } catch (e) {
         alert(e);
         console.error(e);
+        return;
     }
     // Send a success message
     alert("The card has been saved");
@@ -247,7 +281,7 @@ loadNewModelBtn.addEventListener("click", async (e) => {
         const newModelName = name.split(".")[0];
         
         // Check if the model already exists
-        const model = getDB(cardsModelsDBName)?.objs.find(o => o.model && o.name === newModelName);
+        const model = (await getModels(cardsModelsDB)).find(o => o.model && o.name === newModelName);
 
         if (model) {
             console.error("Error saving the new model: There is another model with the same name");
@@ -256,9 +290,8 @@ loadNewModelBtn.addEventListener("click", async (e) => {
         }
 
         // Add the model into localStorage
-        insertObjDB(`${cardsModelsDBName}`, {
+        saveModel(cardsModelsDB, {
             name: newModelName,
-            model: true,
             file: output
         });
 
@@ -272,17 +305,17 @@ loadNewModelBtn.addEventListener("click", async (e) => {
 });
 
 /* When a user click on a saved model */
-function onCardModelClick(element) {
+async function onCardModelClick(element) {
     const value = element.getAttribute("id");
     const [dbName, objId] = value.split("-");
-    const model = getObjDB(dbName, objId);
+    const obj = (await getAll(cardsModelsDB, cardsModelsDBName)).find(o => o.id == objId);
 
-    if (!model) return alert("Error loading model");
+    if (!obj) return alert("Error loading model");
 
     // Change the input card name
-    cardName.value = model.name;
+    cardName.value = obj.name;
 
-    svgCard.innerHTML = model.file;
+    svgCard.innerHTML = obj.file;
 
     card = document.querySelector("#svgCard svg");
 }
@@ -292,7 +325,7 @@ function deleteCardModel(id) {
     if (!Number.isInteger(id))
         return null;
     // Delete the element and update the DB
-    deleteObjDB(cardsModelsDBName, id);
+    deleteObj(cardsModelsDB, cardsModelsDBName, id);
     // Successful deleted the obj
     return true;
 }
