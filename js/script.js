@@ -221,10 +221,13 @@ loadNewCardBtn.addEventListener("click", async (e) => {
         else if (!svgCard?.innerHTML?.includes("<svg"))
             return alert("Error saving the card: There is no card selected");
         
+        // Remove unnecessary spaces from the card's name
+        const formattedCardName = cardName.value.split(/ +/).join("_");
+
         // Check if the name is available without (), if exists the "base" card
-        const baseCard = (await getCards(cardsModelsDB))?.find(o => !o.model && o.name === cardName.value);
+        const baseCard = (await getCards(cardsModelsDB))?.find(o => !o.model && o.name === formattedCardName);
         // Get elements that have the same name as the current card
-        const sameNameCards = (await getCards(cardsModelsDB))?.filter(o => !o.model && o.name.split(/ +/)[0] === cardName.value);
+        const sameNameCards = (await getCards(cardsModelsDB))?.filter(o => !o.model && o.name.split(/ +/)[0] === formattedCardName);
         let numberOfCopys = "";
         
         if (baseCard) {
@@ -242,9 +245,6 @@ loadNewCardBtn.addEventListener("click", async (e) => {
                 numberOfCopys = `(${copiedCardNumber})`;
             }
         }
-
-        // Remove unnecessary spaces from the card's name
-        const formattedCardName = cardName.value.split(/ +/).join("_");
         
         const newCardName = !numberOfCopys ? `${formattedCardName}` : `${formattedCardName} ${numberOfCopys}`;
         console.log(newCardName);
