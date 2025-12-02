@@ -57,33 +57,39 @@ function readInputFile(input, mode) {
 
 /* Cards & Models */
 
+// SVG card to PNG base64 string
+async function cardModelToPNG(svgEl, moltiplicator) {
+    return new Promise((res, rej) => {
+        // From SVG element create a Blob
+        const svgXml = new XMLSerializer().serializeToString(svgEl);
+        console.log(svgXml);
+        const blob = new Blob([svgXml], { type: 'image/svg+xml;charset=utf-8' } );
+        const url = URL.createObjectURL(blob);
+        console.log(url);
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width * moltiplicator;
+            canvas.height = img.height * moltiplicator;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff00'; // Fill with a trasparent color
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.drawImage(img,0,0);
+
+            res(canvas.toDataURL('image/png'));
+        };
+        img.src = url;
+    });
+}
+
 // Download the custom card in PNG format
 async function downloadCardPNG(svgEl, moltiplicator, cardName) {
-    // From SVG element create a Blob
-    const svgXml = new XMLSerializer().serializeToString(svgEl);
-    console.log(svgXml);
-    const blob = new Blob([svgXml], { type: 'image/svg+xml;charset=utf-8' } );
-    const url = URL.createObjectURL(blob);
-    console.log(url);
-    const img = new Image();
-    img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width * moltiplicator;
-        canvas.height = img.height * moltiplicator;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#ffffff00'; // Fill with a trasparent color
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.drawImage(img,0,0);
-        // Create the link
-        const a = document.createElement('a');
-        a.href = canvas.toDataURL('image/png');
-        a.download = (cardName || 'card') + '.png';
-        // Click on the link
-        a.click(); 
-        // Remove the link
-        URL.revokeObjectURL(url);
-    };
-    img.src = url;
+    // Create the link
+    const a = document.createElement('a');
+    a.href = await cardToPNG(svgEl, moltiplicator);
+    a.download = (cardName || 'card') + '.png';
+    // Click on the link
+    a.click(); 
 }
 
 // Download the custom card in SVG

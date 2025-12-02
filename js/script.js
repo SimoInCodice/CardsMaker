@@ -198,7 +198,7 @@ async function updateCardsUI() {
     const cardsObjs = await getCards(cardsModelsDB);
     if (cardsObjs?.length)
         // Update cards
-        cards.innerHTML = cardsObjs.map(o => `<div class="d-flex align-items-center gap-2"><div onclick="onCardModelClick(this)" id="${cardsModelsDBName}-${o.id}">${o.name}</div><button onclick="onCardDelete(this)" style="width: fit-content;" class="btn btn-danger deleteCard" type="button" value="${o.id}">X</button></div>`).join("");
+        cards.innerHTML = cardsObjs.map(o => `<div class="d-flex align-items-center gap-2"><div onclick="onCardModelClick(this)" id="${cardsModelsDBName}-${o.id}">${o.name}<img src="${o.preview}"></img></div><button onclick="onCardDelete(this)" style="width: fit-content;" class="btn btn-danger deleteCard" type="button" value="${o.id}">X</button></div>`).join("");
     else
         cards.innerHTML = "Nessuna carta";
 }
@@ -207,7 +207,7 @@ async function updateModelsUI() {
     const modelsObjs = await getModels(cardsModelsDB);
     if (modelsObjs?.length)
         // Update cards
-        models.innerHTML = modelsObjs.map(o => `<div class="d-flex align-items-center gap-2"><div onclick="onCardModelClick(this)" id="${cardsModelsDBName}-${o.id}">${o.name}</div><button onclick="onModelDelete(this)" style="width: fit-content;" class="btn btn-danger deleteModel" type="button" value="${o.id}">X</button></div>`).join("");
+        models.innerHTML = modelsObjs.map(o => `<div class="d-flex align-items-center gap-2"><div onclick="onCardModelClick(this)" id="${cardsModelsDBName}-${o.id}">${o.name}<img src="${o.preview}"></img></div><button onclick="onModelDelete(this)" style="width: fit-content;" class="btn btn-danger deleteModel" type="button" value="${o.id}">X</button></div>`).join("");
     else
         models.innerHTML = "Nessun modello";
 }
@@ -247,11 +247,16 @@ loadNewCardBtn.addEventListener("click", async (e) => {
         }
         
         const newCardName = !numberOfCopys ? `${formattedCardName}` : `${formattedCardName} ${numberOfCopys}`;
-        console.log(newCardName);
+        
+        // Create PNG preview of the card
+        const pngPreview = await cardModelToPNG(card, 0.5);
+
+        console.log(pngPreview);
 
         const newCard = {
             name: newCardName,
-            file: svgCard.innerHTML
+            file: svgCard.innerHTML,
+            preview: pngPreview
         };
 
         // Save the card in the DB
@@ -289,10 +294,23 @@ loadNewModelBtn.addEventListener("click", async (e) => {
             return;
         }
 
+        // Element to fill with the output of the file
+        const parentEl = document.createElement("div");
+        parentEl.innerHTML = output;
+        // Create PNG preview of the model
+        const modelSVGEl = parentEl.querySelector("svg");
+
+        console.log(modelSVGEl);
+        
+        const pngPreview = await cardModelToPNG(modelSVGEl, 0.5);
+
+        console.log(pngPreview);
+
         // Add the model into localStorage
         saveModel(cardsModelsDB, {
             name: newModelName,
-            file: output
+            file: output,
+            preview: pngPreview
         });
 
         updateModelsUI();
