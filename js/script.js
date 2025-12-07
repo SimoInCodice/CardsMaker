@@ -198,7 +198,7 @@ async function updateCardsUI() {
     const cardsObjs = await getCards(cardsModelsDB);
     if (cardsObjs?.length)
         // Update cards
-        cards.innerHTML = cardsObjs.map(o => `<div class="d-flex align-items-center gap-2"><div onclick="onCardModelClick(this)" id="${cardsModelsDBName}-${o.id}">${o.name}<img src="${o.preview}"></img></div><button onclick="onCardDelete(this)" style="width: fit-content;" class="btn btn-danger deleteCard" type="button" value="${o.id}">X</button></div>`).join("");
+        cards.innerHTML = cardsObjs.map(o => `<div class="d-flex align-items-center gap-2 mb-2"><div class="d-flex gap-2 align-items-center" onclick="onCardModelClick(this)" id="${cardsModelsDBName}-${o.id}"><img src="${o.preview}"></img><div style="background-color: #d2d2d2; border-radius: 2px;" class="p-1">${o.name}</div></div><button onclick="onCardDelete(this)" style="width: fit-content;" class="btn btn-danger deleteCard" type="button" value="${o.id}"><img style="fill: #ffffff" src="./images/trash.svg" /></button></div>`).join("");
     else
         cards.innerHTML = "Nessuna carta";
 }
@@ -207,7 +207,7 @@ async function updateModelsUI() {
     const modelsObjs = await getModels(cardsModelsDB);
     if (modelsObjs?.length)
         // Update cards
-        models.innerHTML = modelsObjs.map(o => `<div class="d-flex align-items-center gap-2"><div onclick="onCardModelClick(this)" id="${cardsModelsDBName}-${o.id}">${o.name}<img src="${o.preview}"></img></div><button onclick="onModelDelete(this)" style="width: fit-content;" class="btn btn-danger deleteModel" type="button" value="${o.id}">X</button></div>`).join("");
+        models.innerHTML = modelsObjs.map(o => `<div class="d-flex align-items-center gap-2 mb-2"><div class="d-flex gap-2 align-items-center" onclick="onCardModelClick(this)" id="${cardsModelsDBName}-${o.id}"><img src="${o.preview}"></img><div style="background-color: #d2d2d2; border-radius: 2px;" class="p-1">${o.name}</div></div><button onclick="onModelDelete(this)" style="width: fit-content;" class="btn btn-danger deleteModel" type="button" value="${o.id}"><img style="fill: #ffffff" src="./images/trash.svg" /></button></div>`).join("");
     else
         models.innerHTML = "Nessun modello";
 }
